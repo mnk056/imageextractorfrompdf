@@ -1,0 +1,41 @@
+from spire.pdf.common import *
+from spire.pdf import *
+import os
+
+
+# Function to extract images from a page
+def extract_images_from_page(page):
+    return page.ExtractImages()
+
+
+# Create a PdfDocument object
+doc = PdfDocument()
+
+# Load a PDF document
+file_path = ''
+
+try:
+    doc.LoadFromFile(file_path)
+except Exception as e:
+    print(f"Error loading PDF: {e}")
+    exit()
+
+# Save images to the desktop with specified format extension
+desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+index = 0
+
+# Loop through the pages in the document
+for i in range(doc.Pages.Count):
+    page = doc.Pages.get_Item(i)
+
+    # Extract images from a specific page
+    images = extract_images_from_page(page)
+
+    for image in images:
+        image_file_name = os.path.join(desktop_path, f'Image-{index}.png')
+        image.Save(image_file_name, ImageFormat.get_Png())
+
+        print(f"Image-{index} saved!")
+        index += 1
+
+doc.Close()
